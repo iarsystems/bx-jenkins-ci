@@ -40,12 +40,22 @@ It is straightforward to install the BXARM build tools from the __.deb__ package
 $ sudo dpkg --install <path-to>/bxarm-8.50.6.deb
 
 # Initialize the IAR License Manager on the Host
-$ sudo lightlicensemanager init
+$ sudo /opt/iarsystems/bxarm/common/bin/lightlicensemanager init
 
 # Setup the license on the Host
-$ lightlicensemanager setup -s <IAR.License.Server.IP.address> 
+$ /opt/iarsystems/bxarm/common/bin/lightlicensemanager setup -s <IAR.License.Server.IP.address> 
 ```
-* Alternatively you can use the build tools directly from a Docker Container in a transparent manner. There is a [Tutorial: Docker images for IAR Build tools on Linux hosts][bxarm-docker-url].
+__Notes__:
+* Alternatively, it is possible to add the BXARM directories containing the executables on the search PATH, so they can be executed from anywhere. For example:
+```sh
+# Append the following snippet to $HOME/.profile (or $HOME/.bashrc) script
+
+# If BXARM 8.50.6 is installed, set PATH so it includes its bin folders
+if [ -d "/opt/iarsystems/bxarm-8.50.6" ]; then
+   PATH="/opt/iarsystems/bxarm-8.50.6/arm/bin:/opt/iarsystems/bxarm-8.50.6/common/bin:$PATH"
+fi
+```
+* Alternatively, it is possible to use the build tools directly from a Docker Container in a transparent manner. There is a [Tutorial: Docker images for IAR Build tools on Linux hosts][bxarm-docker-url].
 
 
 ## Prepare the project
