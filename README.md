@@ -45,17 +45,17 @@ $ sudo /opt/iarsystems/bxarm/common/bin/lightlicensemanager init
 # Setup the license on the Host
 $ /opt/iarsystems/bxarm/common/bin/lightlicensemanager setup -s <IAR.License.Server.IP.address> 
 ```
-__Notes__:
-* Alternatively, it is possible to add the BXARM directories containing the executables on the search PATH, so they can be executed from anywhere. For example:
-```sh
-# Append the following snippet to $HOME/.profile (or $HOME/.bashrc) script
-
-# If BXARM 8.50.6 is installed, set PATH so it includes its bin folders
-if [ -d "/opt/iarsystems/bxarm-8.50.6" ]; then
-   PATH="/opt/iarsystems/bxarm-8.50.6/arm/bin:/opt/iarsystems/bxarm-8.50.6/common/bin:$PATH"
-fi
-```
-* Alternatively, it is possible to use the build tools directly from a Docker Container in a transparent manner. There is a [Tutorial: Docker images for IAR Build tools on Linux hosts][bxarm-docker-url].
+> __Notes__:
+> * Alternatively, it is possible to add the BXARM directories containing the executables on the search PATH, so they can be executed from anywhere. For example:
+> ```sh
+> # Append the following snippet to $HOME/.profile (or $HOME/.bashrc) script
+>
+> # If BXARM 8.50.6 is installed, set PATH so it includes its bin folders
+> if [ -d "/opt/iarsystems/bxarm-8.50.6" ]; then
+>   PATH="/opt/iarsystems/bxarm-8.50.6/arm/bin:/opt/iarsystems/bxarm-8.50.6/common/bin:$PATH"
+> fi
+> ```
+> * Alternatively, it is possible to use the build tools directly from a Docker Container in a transparent manner. There is a [Tutorial: Docker images for IAR Build tools on Linux hosts][bxarm-docker-url].
 
 
 ## Prepare the project
@@ -78,7 +78,7 @@ You can use the ready-made project available in this repository: [tests/c-stat](
 
 This section will show how GitLab and Jenkins could be configured. 
 
-* _Equivalent CI Tools might be used for this scenario. If you choose to use another combination, please refer to their respective documentation. In that case, the instructions below might not apply._
+> __Note__: Equivalent CI Tools might be used for this scenario. If you choose to use another combination, please refer to their respective documentation. In that case, the instructions below might not apply.
 
 ### Initial settings on the GitLab instance 
 On the GitLab User Settings page, perform the following changes:
@@ -145,10 +145,10 @@ Jenkins is very flexible when it comes to building projects. For this tutorial w
 set -e
 
 for i in $(find . -type f -name *.ewp); do
-	iarbuild $i -build "*" -log all  -parallel 4    
-    if [[ $? -ne 0 ]]; then 
-    	exit $?
-    fi
+  iarbuild $i -build "*" -log all  -parallel 4    
+  if [[ $? -ne 0 ]]; then 
+    exit $?
+  fi
 done
 ```
 4. Click `Save`.
