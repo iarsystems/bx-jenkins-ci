@@ -14,6 +14,9 @@ It assumes that all the required tools 3rd party tools are already installed and
 
 ![](pictures/bxarm-jenkins-ci.png)
 
+If you have questions, you can also check the [__bxarm-jenkins wiki__][repo-wiki-url], or [here][repo-old-issue-url] for earlier questions.
+If you have a new question, post it [here][repo-new-issue-url].
+
 ### Table of Contents
 * [Introduction](#introduction)
 * [Install BXARM](#install-bxarm)
@@ -201,3 +204,7 @@ Questions? Feel free to reach out to us via [fae@iar.com][fae-mail].
 [jenkins-url]: https://www.jenkins.io/
 [jenkins-docs-url]: https://jenkins.io/doc/book/installing/#debianubuntu
 [bxarm-docker-url]: https://github.com/IARSystems/bxarm-docker
+
+[repo-wiki-url]: https://github.com/IARSystems/bxarm-jenkins/wiki
+[repo-new-issue-url]: https://github.com/IARSystems/bxarm-jenkins/issues/new
+[repo-old-issue-url]: https://github.com/IARSystems/bxarm-jenkins/issues?q=is%3Aissue+is%3Aopen%7Cclosed
