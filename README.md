@@ -55,7 +55,7 @@ $ /opt/iarsystems/bxarm/common/bin/lightlicensemanager setup -s <IAR.License.Ser
 >   PATH="/opt/iarsystems/bxarm-8.50.6/arm/bin:/opt/iarsystems/bxarm-8.50.6/common/bin:$PATH"
 > fi
 > ```
-> * Alternatively, it is possible to use the build tools directly from a Docker Container in a transparent manner. There is a [Tutorial: Docker images for IAR Build tools on Linux hosts][bxarm-docker-url]. And then there are [some extra guidelines](https://github.com/IARSystems/bxarm-jenkins/wiki/creating-a-bxarm-docker-image-for-jenkins) on how to adapt the BXARM Docker image ready for Jenkins.
+> * Alternatively, it is possible to use the build tools directly from a Docker Container in a transparent manner. There is a [Tutorial: Docker images for IAR Build tools on Linux hosts][bxarm-docker-url]. And then there are [some extra guidelines](https://github.com/IARSystems/bxarm-jenkins/wiki/creating-a-bxarm-docker-image-for-jenkins) on how to prepare the __BXARM Docker image__ to run its containers from Jenkins.
 
 
 ## Prepare the project
