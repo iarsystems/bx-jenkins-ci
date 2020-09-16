@@ -15,7 +15,7 @@ It assumes that all the required tools 3rd party tools are already installed and
 ![](pictures/bxarm-jenkins-ci.png)
 
 If you have questions, you can also check the [__bxarm-jenkins wiki__][repo-wiki-url], or [here][repo-old-issue-url] for earlier questions.
-If you have a new question, post it [here][repo-new-issue-url].
+If you have a new question, post it [here][repo-new-issue-url]. Also, feel free to reach out to us via [fae@iar.com][fae-mail].
 
 ### Table of Contents
 * [Introduction](#introduction)
@@ -192,15 +192,13 @@ $ git push origin development
 
 And that is how it can be done. Keep in mind that this mini tutorial is only intended to provide you with an example of a possible build server topology towards our [IAR Build Tools on Linux hosts][iar-bx-url] within Jenkins scenarios. It is definitely not a replacement for reading the documentation of the 3rd party involved tools.
 
-Questions? Feel free to reach out to us via [fae@iar.com][fae-mail].
-
 
 
 [iar-bx-url]: https://www.iar.com/bx/
 [iar-mypages-url]: https://iar.com/mypages/
 [iar-mypages-bxarm-url]: http://supp.iar.com/MyPages/?product=BXARM
 [iar-lms2-server-url]: http://links.iar.com/lms2-server
-[fae-mail]: mailto:fae@iar.com?subject=Tell%20me%20more%20about%20bxarm-docker
+[fae-mail]: mailto:fae@iar.com?subject=Tell%20me%20more%20about%20bxarm-jenkins
 [jenkins-url]: https://www.jenkins.io/
 [jenkins-docs-url]: https://jenkins.io/doc/book/installing/#debianubuntu
 [bxarm-docker-url]: https://github.com/IARSystems/bxarm-docker
