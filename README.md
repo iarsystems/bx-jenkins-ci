@@ -14,8 +14,8 @@ It assumes that all the required tools 3rd party tools are already installed and
 
 ![](pictures/bxarm-jenkins-ci.png)
 
-If you have questions, you can also check the [__bxarm-jenkins wiki__][repo-wiki-url], or [here][repo-old-issue-url] for earlier questions.
-If you have a new question, post it [here][repo-new-issue-url]. Also, feel free to reach out to us via [fae@iar.com][fae-mail].
+If you have questions regarding this repository contents, you can start by checking its [__wiki__][repo-wiki-url] and then the [issue tracker][repo-old-issue-url] for the previously asked questions.
+If it is a new question, feel free to post it [here][repo-new-issue-url].
 
 ### Table of Contents
 * [Introduction](#introduction)
