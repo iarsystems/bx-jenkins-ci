@@ -1,7 +1,7 @@
 # Tutorial: IAR Build tools on Linux hosts with Jenkins
 
 ### Requirements
-* [IAR BXARM Tools version v8.50.6+][iar-mypages-bxarm-url], downloadable from [IAR My Pages][iar-mypages-url]
+* [IAR BXARM Tools version v8.50.6+][iar-mypages-bxarm-url], requires a separate license. Please feel free to [contact us](https://www.iar.com/about-us/contact) if you would like to learn how to get access to them.
 * An Ubuntu v18.04+ amd64 Host
 * A Stable Jenkins instance (tested with v2.251)
 * A GitLab instance with a repository containing one IAR Embedded Workbench project (tested with v13.3.5)
