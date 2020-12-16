@@ -17,6 +17,9 @@ It assumes that all the required tools 3rd party tools are already installed and
 If you have questions regarding this repository contents, you can start by checking its [__wiki__][repo-wiki-url] and then the [issue tracker][repo-old-issue-url] for the previously asked questions.
 If it is a new question, feel free to post it [here][repo-new-issue-url].
 
+### Additional Resources
+If you are new to CI/CD, Docker, Jenkins and Self-Hosted Runners or just want to learn more and see the IAR tools in action, you can find an useful selection of recorded webinars about automated building and testing in Linux-based environments [here!][iar-bx-url]
+
 ### Table of Contents
 * [Introduction](#introduction)
 * [Install BXARM](#install-bxarm)
