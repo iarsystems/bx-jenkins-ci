@@ -18,6 +18,7 @@ In order to simplify this tutorial we have broken it down into two main sections
 
 * [Test the IAR Build Tools in the CI pipeline using an IAR Embedded Workbench example project](docs/example.md)
 
+If interested, watch the webinar [Containerized IAR Build Tools on Jenkins Pipelines](https://register.gotowebinar.com/rt/3873431446331162379), which includes a demonstration of this tutorial.
 
 <!-- links -->
 [iar-bx-url]: https://www.iar.com/bx
