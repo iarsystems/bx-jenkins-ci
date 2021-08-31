@@ -38,7 +38,7 @@ Here you will find some examples for different packages and their versions:
 | `<admin>`         | A server user account with _sudo_ privileges.                                                                            |
 | `<git>`           | A server user account that will hold Git repositories.                                                                   |
 | `<server-ip>`     | The server's IP. It can be obtained, for example, from the `ip addr` command.                                            |
-| `<server-name>`   | A FQDN(Full Qualified Domain Name) to the build server. It can be obtained, for example, from the `hostname -f` command. |
+| `<server-name>`   | A FQDN (Full Qualified Domain Name) to the build server. It can be obtained, for example, from the `hostname -f` command. |
 
 
 ## Setup your editor
@@ -201,7 +201,7 @@ ssh-keygen -t ed25519 -C "$(whoami)@$(uname -n)-$(date -I)" -f ~/.ssh/id_ed25519
 >```
 >Generating public/private ed25519 key pair.
 >Created directory '/home/<admin>/.ssh.
->-- Enter passphrase (recommended)
+>-- Enter passphrase (empty for no passphrase)
 >-- Enter same passphrase
 >Your identification has been saved in /home/<admin>/.ssh/id_ed25519_admin
 >Your public key has been saved in /home/<admin>/.ssh/id_ed25519_admin.pub
@@ -237,7 +237,7 @@ Edit the SSH configuration for [`<admin>`](#others):
 ```
 editor ~/.ssh/config
 ```
-And append the following settings:
+And paste the following settings:
 ```
 Host server
   Hostname <server-ip>
@@ -319,6 +319,8 @@ git config user.email "admin@server"
 ```
 git config user.name "Server Admin"
 ```
+
+>:warning: When configuring __user/email__ for git, it is possible to use `--global` if you are the only user in the system.
 
 Push this change back to the `gitolite-admin` repository:
 ```
@@ -549,7 +551,7 @@ Set a friendly name for the `<server-name>` for when connecting to the server vi
 ```
 sudo -u jenkins editor /var/lib/jenkins/.ssh/config
 ```
-And append the following, updating the __Hostname__ field:
+And paste the following, updating the __Hostname__ field:
 ```
 Host localhost server
   Hostname <server-ip>
