@@ -33,18 +33,18 @@ ssh-keygen -t ed25519 -C "developer@workstation" -f ~/.ssh/id_ed25519_dev
 >Your identification has been saved in /home/<developer>/.ssh/id_ed25519_dev
 >Your public key has been saved in /home/<developer>/.ssh/id_ed25519_dev.pub
 >The key fingerprint is:
->SHA256:Bs2WzSK5XN2+████████████9q1YbI9CBQ4bmClsPZQ developer@workstation
+>SHA256:Bs2WzSK5XN2+aXv1d3m09q1YbI9CBQ4bmClsPZQ developer@workstation
 >The key's randomart image is:
 >+--[ED25519 256]--+
->| .███████ =      |
->|  + E ██████     |
+>| .        =      |
+>|  + E .   +      |
 >| . . .= @ % +    |
->|     . █████     |
+>|     .    o      |
 >|      o S * + .  |
->|       █████████ |
+>|       +    +    |
 >|        o o o o  |
 >|         .   .   |
->| ██      ███████ |
+>|    o.o   .oO    |
 >+----[SHA256]-----+
 >```
 
@@ -69,7 +69,7 @@ git clone git@server:my-project /mnt/c/my-project && cd /mnt/c/my-project
 ```
 
 ## Developing the project
-Now the developer will start working on a new feature for the __ComponentB__:
+Now the developer will start working on a new feature for the __componentB__:
 ```
 git checkout -b dev-componentB
 ```
@@ -85,40 +85,26 @@ This example workspace comes with three projects:
 
 Right-click on the __`library`__ project and choose `Make` (or <kbd>F7</kbd>). The `library` project should be built with no errors.
    - Now right-click on the `componentB` project and __Set as Active__.
-   - Unfold the __`componentB`__ project tree and double click on its [main.c](../workspace/portable/componentB/main.c) file so it will open in the __Code Editor__.
-   - Right-click on __`componentB`__ and choose `Make` (or <kbd>F7</kbd>). The `component2` project should be built with no errors.
+   - Unfold the __`componentB`__ project tree and double click on its [componentB.c](../workspace/portable/componentB/componentB.c) file so it will open in the __Code Editor__.
+   - Right-click on __`componentB`__ and choose `Make` (or <kbd>F7</kbd>). The `componentB` project should be built with __no__ errors.
 
 ### Changing the code for `componentB` project 
 
-The __developer__ starts to work on the `dev-componentB` branch and, for illustrative purposes, the `DATATYPE` used in `componentB` had to change from `uint16_t` to __`float`__, for example, to hold values greater than `0xFFFF`.
+The __developer__ starts to work on the `dev-componentB` branch and, for example, the `DATATYPE` used in `componentB` had to change from `int32_t` to __`uint32_t`__ to hold values greater than `0x7FFF_FFFF`.
 
-On the [main.c](../workspace/portable/componentB/main.c) file, right-click on the line with the __[`#include "library.h"`](../workspace/portable/componentB/main.c#L12)__ and choose __Open "library.h"__.
+On the [componentB.c](../workspace/portable/componentB/componentB.c) file, right-click on the line with the __[`#include "library.h"`](../workspace/portable/componentB/componentB.c#L12)__ and choose __Open "library.h"__.
 
-In the [library.h](../workspace/portable/library/library.h) file, find the line __[`#define DATATYPE uint16_t`](../workspace/portable/library/library.h#L19)__ and replace it with
+In the [library.h](../workspace/portable/library/library.h) file, find the line __[`#define DATATYPE int32_t`](../workspace/portable/library/library.h#L25)__ and replace it with
 ```c
-#define DATATYPE float
+#define DATATYPE uint32_t
 ```
   
-In the [main.c](../workspace/portable/componentB/main.c) file, update the constant `z` to `100000`.
-```c
-  const DATATYPE z = 100000;
-```
+Rebuild the `library` project using right-click on `library` and choose `Make` (or <kbd>F7</kbd>). It should build with __no errors__.
 
-On the same file, update the `debug_log()` function string format to handle the __float__ type. Change the formatted string from `%d` to `%f` as below:
-```c
-  debug_log("Sum = %f\r\n", sum);
-```
-and
-```c
-  debug_log("Mul = %f\r\n", mul);
-```
-  
-Rebuild the `library` project using right-click on `library` and choose `Make` (or <kbd>F7</kbd>). It should build with no errors.
-
-Rebuild the `componentB` project using right-click on `componentB` and choose `Make` (or <kbd>F7</kbd>). It should build with no errors.
+Rebuild the `componentB` project using right-click on `componentB` and choose `Make` (or <kbd>F7</kbd>). It should build with __no errors__.
 
 ### Commit the changes
-Go back to the Git bash terminal.
+Go back to the Git Bash terminal.
 
 Commit to the changes to the tracked files in the cloned `my-project` repository:
 ```
@@ -127,8 +113,8 @@ git commit --all --message "Improvement proposal for componentB"
 
 The expected output is similar to this, but with a different commit hash:
 >```
->[dev-componentB 5b03ed8] Improvement proposal for componentB
->  2 files changed, 5 insertions(+), 5 deletions(-)
+>[dev-componentB 098cc4c] Improvement proposal for componentB
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >```
 
 Finally publish these changes with `git push`, so the code changes go back to the `origin` repository:
@@ -142,9 +128,9 @@ Push output example:
 >Enumerating objects: 9, done.
 >Counting objects: 100% (9/9), done.
 >Delta compression using up to 8 threads
->Compressing objects: 100% (6/6), done.
->Writing objects: 100% (7/7), 578 bytes | 430.00 KiB/s, done.
->Total 7 (delta 4), reused 0 (delta 0)
+>Compressing objects: 100% (5/5), done.
+>Writing objects: 100% (5/5), 1.06 KiB | 1.06 MiB/s, done.
+>Total 5 (delta 4), reused 0 (delta 0)
 >To server:my-project.git
 > * [new branch]      dev-componentB -> dev-componentB
 >Branch 'dev-componentB' set up to track remote branch 'dev-componentB' from 'origin'.
@@ -154,13 +140,15 @@ Push output example:
 ## Jenkins Build
 Going back to Jenkins we will see in the `Status` that a new branch named `dev-componentB` has been automatically detected and the pipeline has been executed.
 
-Although the changes that we performed on the __componentB__ project affected the __Library__ which was also used by the __componentA__, which we did not notice when performing the changes in the IDE.
+Although the changes that we performed on the __componentB__ project affected the __library__ which was also used by the __componentA__, which we did not notice while performing the changes in the __componentB__ from IDE. Now imagine this tug-of-war for a bigger project with dozens of components using shared resources.
   
 This event shows the benefit of using a DevOps pipeline when developing bigger projects, where there are dependencies and multiple actors. This practice helps development teams in organizations to spot issues in the broader spectrum faster, while delivering better results in the long run.
  
 The failed pipeline gives the opportunity for both __Project Managers__ and __Developers__ to discuss alternative approaches to fix one issue without creating others which would be, otherwise, discovered probably later on.
   
 Ultimately, the pipeline builds a development log of the project which, when properly used, can become a solid asset for consistent deliveries as the project evolves.
+
+>:warning: The __library__ project was deliberadely crafted without following the good practice of [single-responsibility principle (SRP)](https://en.wikipedia.org/wiki/Single-responsibility_principle), especially for the purpose of this demonstration.
 
 ## Summary
 In short, in this tutorial we went through one of the many ways that the [IAR Build Tools for Linux](https://iar.com/bx) can be used in CI scenarios. 
