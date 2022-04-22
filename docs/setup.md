@@ -90,7 +90,7 @@ editor hello.txt
 
      
 ## Setup the IAR Build Tools
-For this tutorial, we will build a __Docker image__, with the __IAR Build Tools__ for any of the architecture we are going to use, in the __build server__. By doing so, they not only become easier to manage but also easier to use with Jenkins, especially when more than a single toolchain is in use. We have a previous [Docker-specific tutorial](https://github.com/iarsystems/bx-docker) that details the entire process. From here we are going straight ahead. 
+For this tutorial, we will build a __Docker image__, with the __IAR Build Tools__ for any of the architecture we are going to use, in the __build server__. By doing so, they not only become easier to manage but also easier to use with Jenkins, especially when more than a single toolchain is in use. We have a previous [Docker-specific tutorial](https://github.com/iarsystems/bx-docker/tree/c813bfc423030ed08c535c9054c5edfc8e364bbc) that details the entire process. From here we are going straight ahead. 
 
 ### Install the Docker Engine
 Paste the following commands that allow `apt` to use a repository over HTTPS:
