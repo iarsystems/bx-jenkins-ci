@@ -1,0 +1,51 @@
+jenkins:
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+       - id: ${JENKINS_ADMIN_ID}
+         password: ${JENKINS_ADMIN_PASSWORD}
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - "GROUP:Agent/Build:authenticated"
+        - "GROUP:Agent/Configure:authenticated"
+        - "GROUP:Agent/Connect:authenticated"
+        - "GROUP:Agent/Create:authenticated"
+        - "GROUP:Agent/Delete:authenticated"
+        - "GROUP:Agent/Disconnect:authenticated"
+        - "GROUP:Credentials/Create:authenticated"
+        - "GROUP:Credentials/Delete:authenticated"
+        - "GROUP:Credentials/ManageDomains:authenticated"
+        - "GROUP:Credentials/Update:authenticated"
+        - "GROUP:Credentials/View:authenticated"
+        - "GROUP:Job/Build:authenticated"
+        - "GROUP:Job/Cancel:authenticated"
+        - "GROUP:Job/Configure:authenticated"
+        - "GROUP:Job/Create:authenticated"
+        - "GROUP:Job/Delete:authenticated"
+        - "GROUP:Job/Discover:authenticated"
+        - "GROUP:Job/Move:authenticated"
+        - "GROUP:Job/Read:authenticated"
+        - "GROUP:Job/Workspace:authenticated"
+        - "GROUP:Overall/Administer:authenticated"
+        - "GROUP:Overall/Read:authenticated"
+        - "GROUP:Run/Delete:authenticated"
+        - "GROUP:Run/Replay:authenticated"
+        - "GROUP:Run/Update:authenticated"
+        - "GROUP:View/Configure:authenticated"
+        - "GROUP:View/Create:authenticated"
+        - "GROUP:View/Delete:authenticated"
+        - "GROUP:View/Read:authenticated"
+        - "USER:Overall/Read:anonymous"
+  remotingSecurity:
+    enabled: true
+security:
+  queueItemAuthenticator:
+    authenticators:
+    - global:
+        strategy: triggeringUsersAuthorizationStrategy
+unclassified:
+  location:
+    url: http://jenkins:8080/
+    

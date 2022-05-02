@@ -1,6 +1,0 @@
-[submodule "docker"]
-	path = docker
-	url = https://github.com/iarsystems/bx-docker.git
-[submodule "workspaces"]
-	path = workspaces
-	url = https://github.com/iarsystems/bx-workspaces-ci.git
