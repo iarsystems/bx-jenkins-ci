@@ -226,7 +226,7 @@ Go to your web browser and navigate to [http://jenkins:8080](http://jenkins:8080
 
 Log in as __admin__.
 
-Go to __Manage Jenkins__ → __Configure System__ → __Cloud__ → __a separate configuration page__.
+Go to __Configure a cloud →__.
 
 Select __Add a new cloud__ → __Docker__.
 
