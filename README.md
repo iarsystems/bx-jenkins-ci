@@ -127,7 +127,7 @@ docker run --name gitea \
   --volume /etc/timezone:/etc/timezone:ro \
   --volume /etc/localtime:/etc/localtime:ro \
   --publish 3000:3000 --publish 222:22 \
-  gitea/gitea:1.16.6
+  gitea/gitea:1.17.3
 ```
 
 ### Initial setup
