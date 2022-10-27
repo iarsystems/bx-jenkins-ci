@@ -238,7 +238,7 @@ tcp://docker:2376
 ```
 >:bulb: By default, the Docker daemon in the __jenkins-docker__ container listens to the `TCP/2376` port for TLS traffic.
 
-Click on the __Add__ drop-down and create an __X.509 Client Certificate__.
+Click on the __Add__ drop-down, select __Jenkins__ and create an __X.509 Client Certificate__.
 
 When we started the __jenkins-docker__ container, server/client TLS certificates (and key) were automatically generated for us in the __jenkins-docker-certs__ volume which was mapped to the container's `/certs` directory. For enabling Jenkins to talk over TLS we will use those certificates which can be obtained with the following commands: 
 
@@ -257,7 +257,7 @@ docker exec jenkins-docker cat /certs/server/ca.pem
 
 After adding your Credential, select it from the __Server credentials__ drop-down list and then click on __Test Connection__. You should get an output similar to this:
 >```
->Version = 20.10.14, API Version = 1.41
+>Version = 20.10.21, API Version = 1.41
 >```
 
 Tick the __Enabled__ checkbox and, down below, click the __Save__ button.
