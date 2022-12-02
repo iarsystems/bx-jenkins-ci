@@ -333,7 +333,6 @@ With [Jenkins Configuration as Code][url-jenkins-jcasc], setting up a new Jenkin
    
 Now you can learn from the scripts, from the [Dockerfile](Dockerfile) and from the official [Jenkins Documentation][url-jenkins-docs] which together sum up as a cornerstone for your organization to use them as they are or to customize them so that the containers run in suitable ways for particular needs.
 
-[Here][url-iar-bx] you can find additional resources such as on-demand webinars about the IAR Build Tools within automated workflows scenarios.
 
 
 <!-- Links -->
