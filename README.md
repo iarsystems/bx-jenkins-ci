@@ -9,7 +9,7 @@ The core objective is to quickly bootstrap an environment towards automated work
 <img alt="Docker" align="center" src="docs/pictures/bx-jenkins-ci.svg" />
 
 ## Disclaimer
-The information in this repository is subject to change without notice and does not represent a commitment on any part of IAR Systems. While the information contained herein is assumed to be accurate, IAR Systems assumes no responsibility for any errors or omissions.
+The information in this repository is subject to change without notice and does not represent a commitment on any part of IAR. While the information contained herein is assumed to be accurate, IAR assumes no responsibility for any errors or omissions.
 
 
 ## Pre-requisites
@@ -40,7 +40,7 @@ Go to your Windows machine and, as Administrator, edit the __%WINDIR%/system32/d
 
 >:bulb: This step will allow you to, later on, access the containers running on the Linux machine from their respective hostnames and service ports.
 
-<img alt="IAR Systems" align="right" src="https://avatars.githubusercontent.com/u/64431848?s=96&v=4" />
+<img alt="IAR" align="right" src="https://avatars.githubusercontent.com/u/64431848?s=96&v=4" />
 
 ## Setting up the IAR Build Tools
 Now go back to the Linux machine shell to prepare the __jenkins-docker__ container.
