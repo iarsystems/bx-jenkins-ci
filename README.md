@@ -1,5 +1,8 @@
 # Tutorial<br/>IAR Build Tools in a Jenkins CI
 
+## Disclaimer 
+The information provided in this repository is subject to change without notice and does not represent a commitment on any part of IAR. While the information contained herein is useful as reference for DevOps Engineers willing to implement Continuous Integration using IAR Tools, IAR assumes no responsibility for any errors, omissions or particular implementations.
+
 [Jenkins][url-jenkins] is an automation controller suitable for CI (Continuous Integration). [Gitea][url-gitea] is a lightweight Git server.
 
 This tutorial provides a method for deploying a containerized setup for the [IAR Build Tools][url-iar-bx], Gitea and Jenkins, each one on its own container. 
