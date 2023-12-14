@@ -1,23 +1,22 @@
-# Tutorial<br/>IAR Build Tools in a Jenkins CI
+# IAR Build Tools in a Jenkins CI
 
 ## Disclaimer 
 The information provided in this repository is subject to change without notice and does not represent a commitment on any part of IAR. While the information contained herein is useful as reference for DevOps Engineers willing to implement Continuous Integration using IAR Tools, IAR assumes no responsibility for any errors, omissions or particular implementations.
 
 ## Introduction
-[Jenkins][url-jenkins] is an automation controller suitable for CI (Continuous Integration). [Gitea][url-gitea] is a lightweight Git server.
+The [IAR Build Tools](https://iar.com/bx) comes with everything you need to build projects created with the IAR Embedded Workbench from the command line. [Jenkins][url-jenkins] is an automation controller suitable for CI (Continuous Integration). [Gitea][url-gitea] is a lightweight Git server. 
 
-This tutorial provides a method for deploying a containerized setup for the [IAR Build Tools][url-iar-bx], Gitea and Jenkins, each one on its own container. 
+This tutorial provides a quick method for bootstrapping the IAR Build Tools, Gitea and Jenkins, each one on its own container, for building and analyzing your embedded projects on-premises. From this starting point, you can apply customizations suitable for your organization's needs.
 
-The core objective is to quickly bootstrap an environment towards automated workflows for building and analyzing your embedded projects so that later you can customize it as you or your organization see fit.
+![bx-jenkins-ci](https://github.com/felipe-iar/bx-jenkins-ci/assets/54443595/bf9ddc03-132e-4706-9af2-25850d891aba)
 
-<img alt="Docker" align="center" src="docs/pictures/bx-jenkins-ci.svg" />
 
 ## Pre-requisites
 For completing this tutorial you are going to need to have the [__bx-docker__][url-bx-docker] tutorial completed. 
 
-You will also need a web browser to access webpages. For this tutorial we will consider that the web browser is installed on a Windows machine in which you have privileges to execute administrative tasks and that can reach the Linux machine containing the Docker daemon with the IAR Build Tools.
+You will also need a web browser to access webpages. For this tutorial we will consider that the web browser is installed on a Windows machine in which you have privileges to execute administrative tasks and that can reach the Linux server containing the Docker daemon with the IAR Build Tools.
 
-In the Linux machine shell, clone this repository to the user's home directory (`~`):
+In the Linux server's shell, clone this repository to the user's home directory (`~`):
 ```
 git clone https://github.com/iarsystems/bx-jenkins-ci.git ~/bx-jenkins-ci
 ```
@@ -26,28 +25,22 @@ git clone https://github.com/iarsystems/bx-jenkins-ci.git ~/bx-jenkins-ci
 <img alt="Docker" align="right" src="https://avatars.githubusercontent.com/u/5429470?s=96&v=4" />
 
 ## Setting up a Docker Network
-In order to simplify our setup let's create a [docker network][url-docker-docs-net] and spawn all our containers on that network (defined with the `--network` parameter), so they can reach each other through their respective __network aliases__ (defined with the `--network-alias` parameter).
-
-On the Linux machine shell, execute the following command to create the __jenkins__ network:
+For simplifying this setup let's create a [docker network][url-docker-docs-net] named __jenkins__ in the Linux server's shell:
 ```
 docker network create jenkins
 ```
+From here onwards, we spawn all the tutorial's containers with `--network-alias <name> --network jenkins` so that they become visible and reacheable from each other.
 
-Go to your Windows machine and, as Administrator, edit the __%WINDIR%/system32/drivers/etc/hosts__ file. Add the following line, replacing `192.168.1.2` by the Docker host's IP:
+As administrator, edit the __%WINDIR%/system32/drivers/etc/hosts__ file in the Windows PC. Add the following line, replacing `192.168.1.2` by the actual Linux server's IP address. With that, the Windows PC can reach the containers' exposed service ports by their respective network-alias names:
 ```
 192.168.1.2 docker gitea jenkins
 ```
 
->:bulb: This step will allow you to, later on, access the containers running on the Linux machine from their respective hostnames and service ports.
-
 <img alt="IAR" align="right" src="https://avatars.githubusercontent.com/u/64431848?s=96&v=4" />
 
 ## Setting up the IAR Build Tools
-Now go back to the Linux machine shell to prepare the __jenkins-docker__ container.
+Now go back to the Linux server's shell to prepare the first container. The __jenkins-docker__ container will be based on the __docker:dind__ image, which provides a secure [Docker Registry][url-docker-registry] serving the Docker network you just created.
 
-It will use the official __docker:dind__ image. This image will allow us to run "Docker-in-Docker" so the Jenkins container will be able to access its docker images directly. This technique is easier to set up and it works as a secure [Docker Registry][url-docker-registry] for the Docker network we've just created.
-
-On the Linux machine shell, execute the following command:
 ```
 docker run --name jenkins-docker \
   --network jenkins --network-alias docker \
@@ -59,56 +52,57 @@ docker run --name jenkins-docker \
   docker:dind --storage-driver overlay2 
 ```
 
-Next we save the desired __iarsystems/bx\<package\>:\<version\>__ Docker image created with the [bx-docker][url-bx-docker] recipe to a compressed tape archive (`.tgz`):
+The Docker image with the IAR Build Tools created during the [bx-docker][url-bx-docker] tutorial can be loaded into this registry, becoming available for running containers for build jobs (the entire process might take a while):
 ```
-docker save iarsystems/bx<package>:<version> | gzip > ~/bx.tgz
-```
-
-Move it to the __jenkins-docker__ container's root directory:
-```
-docker cp ~/bx.tgz jenkins-docker:/ && rm ~/bx.tgz 
-```
-
-Now load the image on the `jenkins-docker` container:
-```
-docker exec jenkins-docker docker load -i /bx.tgz
+export BX_IMAGE=$(docker image list -q --format="{{.Repository}}:{{.Tag}}" --filter="reference=iarsystems/bx*")
+export BX_FILE=$(echo ${BX_IMAGE//:/-} | cut -f2 -d/)
+docker save $BX_IMAGE | gzip > ~/$BX_FILE.tgz
+docker cp ~/$BX_FILE.tgz jenkins-docker:/
+rm ~/$BX_FILE.tgz
+docker exec jenkins-docker docker load -i /$BX_FILE.tgz
+docker exec jenkins-docker docker image list
+docker exec jenkins-docker rm /$BX_FILE.tgz
+export -n BX_FILE
 ```
 
-So that now the IAR Build Tools are available from the __jenkins-docker__ container:
-```
-docker exec jenkins-docker docker images iarsystems/*
-```
-For example:
+>__Note__ the above __BX_IMAGE__ command automatically detects the IAR Build Tools image, assuming you currently only have one image.
+
+The previous command sequence should provide an output showing the `docker image list` from the __jenkins-docker__ container:
 >```
->REPOSITORY         TAG      IMAGE ID       CREATED         SIZE
->iarsystems/bxarm   9.20.4   adf216719d3b   5 minutes ago   2.45GB
+>Successfully copied 985MB to jenkins-docker:/
+>Loaded image: iarsystems/bxarm:9.50.1
+>REPOSITORY         TAG       IMAGE ID       CREATED         SIZE
+>iarsystems/bxarm   9.50.1    bab152fb558d   7 minutes ago   3.73GB
 >```
-
-Remove the container's temporary __bx.tgz__ file:
-```
-docker exec jenkins-docker rm /bx.tgz 
-```
 
 ### Setup the license
-Enter into a __jenkins-docker__ container's interactive shell:
-```
-docker exec --interactive --tty jenkins-docker sh
-```
+This section must be performed once to setup the IAR Build Tools for making use of licenses from your network's IAR License Server.
 
-Setup the license with `lightlicensemanager` from a disposable container using the IAR Build Tools image with the __\<package\>__, __\<version\>__ and __\<lms2-server-ip\>__ in use:
+Execute an interactive shell in the __jenkins-docker__ container:
 ```
-docker run --rm \
-  --volume LMS2:/usr/local/etc/IARSystems \
-  iarsystems/bx<package>:<version> \
-  /opt/iarsystems/bx<package>/common/bin/lightlicensemanager setup -s <lms2-server-ip>
+docker exec -it jenkins-docker sh
 ```
-
-Exit the __jenkins-docker__ container:
+Replace `IAR_LICENSE_SERVER_IP` by its actual IP address and, inside the __jenkins-docker__ container execute:
 ```
+export IAR_LICENSE_SERVER_IP=192.168.1.3
+export BX_IMAGE=$(docker image list -q --format="{{.Repository}}:{{.Tag}}" --filter="reference=iarsystems/bx*")
+export LLM=$(docker run --rm $BX_IMAGE find /opt -type f -name "lightlicensemanager")
+docker run --rm -v LMS2:/usr/local/etc/IARSystems $BX_IMAGE $LLM setup -s $IAR_LICENSE_SERVER_IP
+export -n LLM BX_IMAGE IAR_LICENSE_SERVER_IP
 exit
 ```
 
-And finally commit the changes to the __jenkins-docker__ container:
+Back to the Linux server's shell, test the IAR C/C++ Compiler (`icc<target>`):
+```
+COMPILER=$(docker exec jenkins-docker docker run $BX_IMAGE /usr/bin/find /opt -type f -wholename "*/bin/icc*")
+docker exec jenkins-docker docker run --rm -v LMS2:/usr/local/etc/IARSystems $BX_IMAGE $COMPILER --version
+```
+Expect an output similar to:
+>```
+>IAR ANSI C/C++ Compiler VX.yy.zz/LNX for <target> BX
+>```
+
+Finally commit the changes to the __jenkins-docker__ container:
 ```
 docker commit jenkins-docker
 ```
@@ -116,9 +110,7 @@ docker commit jenkins-docker
 <img alt="Gitea" align="right" src="https://avatars.githubusercontent.com/u/12724356?s=96&v=4"/>
 
 ## Setting up Gitea
-Now it is the perfect time for us to set our __gitea__ container.
-
-On the Linux machine, execute:
+Now it is __gitea__ time. On the Linux server's shell, execute:
 ```
 docker run --name gitea \
   --network jenkins --network-alias gitea \
@@ -126,76 +118,66 @@ docker run --name gitea \
   --volume gitea:/data \
   --volume /etc/timezone:/etc/timezone:ro \
   --volume /etc/localtime:/etc/localtime:ro \
-  --publish 3000:3000 --publish 222:22 \
-  gitea/gitea:1.17.3
+  --publish 3000:3000 --publish 2222:2222 \
+  gitea/gitea:1.20
 ```
 
-### Initial setup
-On the web browser, navigate to [http://gitea:3000](http://gitea:3000) to perform the initial setup.
+A webhook is a mechanism which can be used to trigger associated build jobs in Jenkins whenever, for example, code is pushed into a Git repository.
 
-Change __Server Domain__ to `gitea`
-
-Change __Gitea Base URL__ to `http://gitea:3000`. 
-
-Next click __Install Gitea__.
-
-When running Gitea from a container, the first registered user will be the administrator. Register a new user (e.g. __jenkins__).
-
-### Migrating a repository
-
-On the top right corner of the page, go to __`+`__ → __New Migration__ → __GitHub__. 
-
-Use the Gitea's migration form to migrate the [bx-workspaces-ci][url-bx-workspaces-ci] repository.
-
-Edit the [Jenkinsfile](http://gitea:3000/jenkins/bx-workspaces-ci/_edit/master/Jenkinsfile) and update its Docker __image__ and __environment__ to match the ones in use.
-
-### Generating an access token
-For accessing the Gitea account from Jenkins we will not use the user credentials. Instead let's create a token.
-
-In the user profile settings, go to __Application__ → __Generate New Token__. Choose a __Token Name__ (e.g. "Jenkins Token") and click on __Generate Token__.
-
->:bulb: Make sure to take note of the token shown. It will not be shown again.
-
-### Allowing webhooks from the internal network
-On the Linux machine shell, edit __app.ini__ using the [`vi`][url-vi] editor available in the __gitea__ container: 
+Update `/data/gitea/conf/app.ini` for accepting webhooks from the __jenkins__ container, commit and restart:
 ```
-docker exec -it gitea vi /data/gitea/conf/app.ini
-```
-
-Scroll down using <kbd>PGDN</kbd> and paste the following snippet to allow webhooks with the __jenkins__ container:
-```
-[webhook]
-ALLOWED_HOST_LIST=jenkins
-DISABLE_WEBHOOKS=false
-```
-
-Press <kbd>ESC</kbd>,  <kbd>:</kbd>, <kbd>w</kbd>, <kbd>q</kbd>, <kbd>ENTER</kbd> to __write__ to the file and __quit__.
-
-Finally restart the __gitea__ container:
-```
+docker exec gitea bash -c "echo -e '\n[webhook]\nALLOWED_HOST_LIST=jenkins\nDISABLE_WEBHOOKS=false' >> /data/gitea/conf/app.ini"
+docker commit gitea
 docker restart gitea
 ```
+
+On the web browser, navigate to http://gitea:3000 to perform the initial Gitea setup:
+- Make sure __Server Domain__ is set to `gitea`.
+- Make sure __Gitea Base URL__ is set to `http://gitea:3000`. 
+- Click __`Install Gitea`__.
+- __Register__ a new user (http://gitea:3000/user/sign_up, suggestion: `jenkins`). The first user created is the administrator.
+
+### Generating an access token
+Instead of using the Gitea administrator account credentials outside its container, it is recommended to use a personal access token so that jenkins can access the repository without the need of using Gitea's administrative credentials.
+
+To generate a new token in the user profile settings:
+- Go to __Application__ → __Generate New Token__.
+- Choose a __Token Name__ (e.g. "Jenkins Token").
+- Select the following permissions:
+   - __issue__: `Read and Write`
+   - __notification__: `Read and Write`
+   - __organization__: `Read and Write`
+   - __repository__: `Read and Write`
+   - __user__: `Read and Write`
+- click on __Generate Token__.
+
+>:bulb: You can generate as many access tokens as you need however, when generating a new token, make sure to copy it when shown in the next page. It will never be shown again.
+
+### Example by migrating an existing repository
+On the top-right corner of the page:
+- Go to __`+`__ → __New Migration__ → __GitHub__ (http://gitea:3000/repo/migrate?service_type=2). 
+- __Migrate / Clone from URL__: [`https://github.com/iarsystems/bx-workspaces-ci`](https://github.com/iarsystems/bx-workspaces-ci).
+- Edit the [Jenkinsfile](http://gitea:3000/jenkins/bx-workspaces-ci/_edit/master/Jenkinsfile)
+   - update its Docker __agent__ settings to match your [bx-docker](https://github.com/iarsystems/bx-docker) image.
 
 
 <img alt="Jenkins" align="right" src="https://avatars.githubusercontent.com/u/107424?s=96&v=4"/>
 
 ## Setting up Jenkins
-Let's now set up the __jenkins__ container.
+It is finally __jenkins__ time. The standard Jenkins setup has a number of steps which can be automated with the [configuration-as-code][url-plugin-casc] plugin. 
 
-In general, the standard Jenkins setup has a number of steps and, given its fast-paced and complex ecosystem, it tends to break in terms of compatibility with many of its plugins on their bleeding edge versions. 
-
-In order to reduce the chances of getting broken versions for this tutorial, let's use a custom [Dockerfile](Dockerfile) that will:
-* use the __jenkins/jenkins:lts-jdk11__ as base image, which offers __LTS__ (Long-Term Support)
-* use the [configuration-as-code][url-plugin-casc] plugin, so we get the initial Jenkins [configuration](jcasc.yaml) out-of-the-box
-* use the `jenkins-plugin-cli` utility to automatically install a collection of [plugins](plugins.txt) 
+The standard Jenkins setup has a number of steps that can be automated with the [configuration-as-code][url-plugin-casc] plugin. Given its fast-paced and complex ecosystem, plugin versions compatibility tend to break regarding interdependencies and the situation becomes worse for those living on the bleeding edge versions. For such reasons, it is reasonable to create a selection of plugin versions which were known to be in a working state for __reducing__ the chances of using broken plugin versions. For this, let's use a custom [Dockerfile](Dockerfile) that will:
+* use the __jenkins/jenkins:lts-jdk11__ as base image, a stable version offering __LTS__ (Long-Term Support).
+* use the __configuration-as-code__ plugin, so that we script the initial Jenkins [configuration](jcasc.yaml).
+* use the `jenkins-plugin-cli` command line utility to install a collection of [plugins](plugins.txt) versions that are known to be working.
 
 Build the image, tagging it as __jenkins:jcasc__:
 ```
-docker build --tag jenkins:jcasc ~/bx-jenkins-ci
+docker build -t jenkins:jcasc ~/bx-jenkins-ci
 ```
 
 Now run the __jenkins__ container:
->:bulb: Edit the `JENKINS_ADMIN_ID` and `JENKINS_ADMIN_PASSWORD` values if credentials other than `admin/password` are desired for the Jenkins' administrative user.
+>__Note__ Edit `JENKINS_ADMIN_ID` and `JENKINS_ADMIN_PASSWORD` for running with credentials other than `admin`/`password` for the Jenkins' administrative user.
 ```
 docker run --name jenkins \
   --network jenkins --network-alias jenkins \
@@ -211,91 +193,69 @@ docker run --name jenkins \
   jenkins:jcasc
 ```
 
-Lastly copy the `docker` client to the __jenkins__ container. It will be used by the [__docker-workflow__][url-plugin-docker-workflow] plugin later on:
+The plugin [__docker-workflow__][url-plugin-docker-workflow] requires a `docker` client available in the __jenkins__ container. Docker is unable to copy files directly from one container to another so an intermediate step through the host becomes necessary:
 ```
-docker cp jenkins-docker:/usr/local/bin/docker ~ \
-  && docker cp ~/docker jenkins:/usr/local/bin \
-  && rm ~/docker
+docker cp jenkins-docker:/usr/local/bin/docker ~
+docker cp ~/docker jenkins:/usr/local/bin
+rm ~/docker
+docker exec jenkins docker --version
+docker commit jenkins
 ```
-
+The output should be similar to:
+>```
+>Successfully copied 34.8MB to /home/user
+>Successfully copied 34.8MB to jenkins:/usr/local/bin
+>Docker version 24.0.7, build afdd53b
+>sha256:6dc192cfdd40b7006c6c152096070bd253c5b1f6b2ae5fc0e2fc683a15791825
+>```
 
 ### Setting up the Docker Cloud plugin
-It is time to configure the [__docker-cloud__][url-plugin-docker-cloud] plugin.
+It is time to configure the [__docker-cloud__][url-plugin-docker-cloud] plugin. In your web browser:
 
-Go to your web browser and navigate to [http://jenkins:8080](http://jenkins:8080).
+- Navigate to [http://jenkins:8080](http://jenkins:8080).
+- Log in as "administrator" (e.g., __admin__).
+- Go to __Configure a cloud →__.
+- Select __New cloud__ → __Docker__.
+- Name it `Jenkins cloud` and hit __`  Create  `__.
+- Unfold __`  Docker Cloud details  `__.
+- Fill __Docker Host URI__ with `tcp://docker:2376`
+- Click on the ` Add ` drop-down list and select __Jenkins__.
+- In "Kind" select __X.509 Client Certificate__.
 
-Log in as __admin__.
+When we started the __jenkins-docker__ container, server/client TLS certificates (and key) were automatically generated in the __jenkins-docker-certs__ volume. Those certificates are required to enable the __jenkins__ container to talk to the Docker deamon in the __jenkins-docker__ container. Open your Linux server's shell and issue the following commands:
 
-Go to __Configure a cloud →__.
+| Item | Docker command |
+| - | - |
+| __Client Key__ | `docker exec jenkins-docker cat /certs/client/key.pem` |
+| __Client Certificate__ | `docker exec jenkins-docker cat /certs/client/cert.pem` |
+| __Server CA Certificate__ |  `docker exec jenkins-docker cat /certs/server/ca.pem` |
 
-Select __Add a new cloud__ → __Docker__.
-
-Click on __Docker Cloud details...__.
-
-Fill the __Docker Host URI__ field with the "network alias" (hostname) we defined for the __jenkins-docker__ container:
-```
-tcp://docker:2376
-```
->:bulb: By default, the Docker daemon in the __jenkins-docker__ container listens to the `TCP/2376` port for TLS traffic.
-
-Click on the __Add__ drop-down, select __Jenkins__ and create an __X.509 Client Certificate__.
-
-When we started the __jenkins-docker__ container, server/client TLS certificates (and key) were automatically generated for us in the __jenkins-docker-certs__ volume which was mapped to the container's `/certs` directory. For enabling Jenkins to talk over TLS we will use those certificates which can be obtained with the following commands: 
-
-__Client Key__:
-```
-docker exec jenkins-docker cat /certs/client/key.pem
-```
-__Client Certificate__:
-```
-docker exec jenkins-docker cat /certs/client/cert.pem
-```
-__Server CA Certificate__:
-```
-docker exec jenkins-docker cat /certs/server/ca.pem
-```
-
-After adding your Credential, select it from the __Server credentials__ drop-down list and then click on __Test Connection__. You should get an output similar to this:
->```
->Version = 20.10.21, API Version = 1.41
->```
-
-Tick the __Enabled__ checkbox and, down below, click the __Save__ button.
+Go back to the Jenkins cloud creation page:
+- Select the __Server credentials__ you just created, available from the drop-down list.
+- Click __` Test Connection `__. You should get an output similar to: `Version = 24.0.7, API Version = 1.43`.
+- Tick the __Enabled__ checkbox and, down below, click the ` Save ` button.
 
 ### Setting up the Gitea plugin
-In order to configure the [__gitea__][url-plugin-gitea] plugin, proceed as follows:
-Go to __Manage Jenkins__ → __Configure System__ and scroll down to __Gitea Servers__.
+To configure the [__gitea__][url-plugin-gitea] plugin proceed as follows, starting from the Jenkins Dashboard (http://jenkins:8080):
+- Go to __Manage Jenkins__.
+- Go to __System__ under the "System Configuration" section (http://jenkins:8080/manage/configure).
+- Scroll down to __Gitea Servers__ and click ` Add ` → __Gitea Server__.
+- Name it (e.g.) "Gitea Server".
+- Set __Server URL__ to `http://gitea:3000`. You should see `Gitea Version: 1.20.6` as response.
+- Enable the __Manage hooks__ checkbox. This will allow Jenkins to manage the [webhooks][url-gitea-docs-webhooks] for the Gitea server.
+   - ` Add ` a new __Jenkins__ (global) credential.
+   - Change its "Kind" to __Gitea Personal Access Token__.
+   - Paste the Gitea access token created during the Gitea server setup.
+   - Give it a __Description__ (e.g. "Jenkins Token"), click __` Add `__ and then __` Save `__.
 
-__Add__ a new __Gitea server__ (e.g. "Gitea Server") with URL pointing to `http://gitea:3000`.
+### Creating an Organization Folder
+Go back to the Jenkins Dashboard (http://jenkins:8080):
 
-Enable the __Manage hooks__ checkbox. This will allow Jenkins to manage the [webhooks][url-gitea-docs-webhooks] for the Gitea server.
-
-Select __Add__ next to the credentials dropdown and change its "Kind" to __Gitea Personal Access Token__.
-
-Set the "Scope" to __Global__.
-
-Paste the __Token__ that you took note during the Gitea server setup.
-
-Give it a __Description__ (e.g. "Jenkins Token") and click __Add__.
-
-Click __Save__.
-
->:bulb: Jenkins provides plugins for many other Git servers including Bitbucket, GitHub and GitLab. Although these services provide their own CI infrastructure. Gitea was chosen for this tutorial for its simplicity to deploy and use. Refer to [Managing Jenkins/Managing Plugins][url-jenkins-docs-plugins] for further details.
-
-## Creating an Organization Folder
-Now go to the Dashboard at [http://jenkins:8080](http://jenkins:8080).
-
-On the main menu, click __New Item__.
-
-Select __Organization Folder__, give it a name (e.g. "My organization") and click __Ok__.
-
-Click on the __Projects__ tab and in __Repository Sources__, select __Gitea Organization__.
-
-Select the "Jenkins Token" from the __Credentials__ drop-down list.
-
-Fill the __Owner__ field with the username you created for your Gitea server.
-
-Click __Save__.
+- Click __New Item__.
+- Select __Organization Folder__, give it a name (e.g. "Organization") and click __` OK `__.
+- Select __Projects__ → "Repository Sources" → __` Add `__ → __Gitea Organization__.
+- Select the "Jenkins Token" from the __Credentials__ drop-down list.
+- Fill the __Owner__ field with the username you created for your Gitea server (e.g., `jenkins`) and __` Save `__.
 
 
 ## What happens next?
@@ -303,22 +263,39 @@ After that, Jenkins will use its multi-branch scan plugin to retrieve all the pr
 
 When a project repository contains a [Jenkinsfile](https://github.com/IARSystems/bx-workspaces-ci/blob/master/Jenkinsfile) that uses a [declarative pipeline](https://www.jenkins.io/doc/book/pipeline/syntax/), Jenkins will then automatically execute the pipeline.
 
-When the pipeline uses `agent { docker { image 'iarsystems/bx<package>:<version>' } } ...`, the __docker-cloud__ plugin will automatically use the required Docker image from the __jenkins-docker__ container.
+When the pipeline requests a Docker agent for the __docker-cloud__ plugin, it will automatically forward the request to the __jenkins-docker__ container so a new container based on the selected image is dynamically spawned during the workflow execution.
+```groovy
+pipeline {
+  agent {
+    docker {
+      image 'iarsystems/bx<package>:<version>' 
+      args '...'
+  }
+/* ... */
+  stage('Build project') {
+     steps {
+       sh '/opt/iarsystems/bx<package>/common/bin/iarbuild project.ewp -build Release -log all'
+      }
+/* ... */
+```
 
-<img alt="Jenkins Pipeline" align="right" src="docs/pictures/jenkins-pipeline.png"/>
+![jenkins-pipeline](https://github.com/felipe-iar/bx-jenkins-ci/assets/54443595/bf8af987-e9aa-48d9-8d21-8a24a1d6f0ba)
 
 Jenkins will get a push notification from Gitea (via webhooks) whenever a monitored event is generated on the __owner__'s repositories.
 
 Now you can start developing using the [IAR Embedded Workbench][url-iar-ew] and committing the project's code to the Gitea Server so you get automated builds and reports.
 
 ### Highlights
-* The [__warnings-ng__][url-plugin-warnings-ng] plugin can show compiler and static analyzer warnings for every build:
+* The [__warnings-ng__][url-plugin-warnings-ng] plugin gives instantaneous feedback for every build on compiler-generated warnings as well violation warnings on conding standards provided by [IAR C-STAT](https://www.iar.com/cstat), our static code analysis tool for C/C++:
 
-![](docs/pictures/jenkins-warnings-ng-cstat.png)
+![jenkins-warnings-ng-cstat](https://github.com/felipe-iar/bx-jenkins-ci/assets/54443595/785ed739-be76-4650-b52e-87b31804d313)
 
 * The [__gitea-checks__][url-plugin-gitea-checks] plugin has integrations with the [__warnings-ng__][url-plugin-warnings-ng] plugin. On the Gitea server, it can help you to spot failing checks on pull requests, preventing potentially defective code from being inadvertently merged into a project's production branch:
 
-![](docs/pictures/gitea-warnings-ng.png)
+![gitea-warnings-ng](https://github.com/felipe-iar/bx-jenkins-ci/assets/54443595/04068ef2-edfd-40a7-80b4-4a2585f30e48)
+
+>__Note__ Jenkins provides plugins for many other Git server providers such as GitHub, GitLab or Bitbucket. Although these services also offer their own CI infrastructure and runners. Gitea was picked for this tutorial for its simplicity to deploy in a container. Refer to [Managing Jenkins/Managing Plugins][url-jenkins-docs-plugins] for further details.
+
 
 ## Issues
 Found an issue or have a suggestion specifically related to the [__bx-jenkins-ci__][url-repo] tutorial? Feel free to use the public issue tracker.
@@ -327,9 +304,7 @@ Found an issue or have a suggestion specifically related to the [__bx-jenkins-ci
 
 
 ## Summary
-There you have it. A quickly deployable and reproducible setup where everything runs on containers. And that was just one of many ways of setting automated workflows using the IAR Build Tools.
-
-With [Jenkins Configuration as Code][url-jenkins-jcasc], setting up a new Jenkins controller can become a no-brainer event. Its whole configuration becomes as simple, human-friendly, plain text yaml syntax as it can be. Without any manual steps, this configuration can be validated and applied to a Jenkins controller in a fully reproducible way.
+There you have it. A quickly deployable and reproducible setup where everything runs on containers. And that was just one of many ways of setting automated workflows using the IAR Build Tools. Using [Jenkins Configuration as Code][url-jenkins-jcasc] for setting up a new Jenkins controller simplifies the initial configuration by employing yaml syntax. Such configuration can be validated and reproduced in other Jenkins controllers.
    
 Now you can learn from the scripts, from the [Dockerfile](Dockerfile) and from the official [Jenkins Documentation][url-jenkins-docs] which together sum up as a cornerstone for your organization to use them as they are or to customize them so that the containers run in suitable ways for particular needs.
 
