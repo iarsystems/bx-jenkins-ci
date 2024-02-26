@@ -94,6 +94,7 @@ exit
 
 Back to the Linux server's shell, test the IAR C/C++ Compiler (`icc<target>`):
 ```
+export BX_IMAGE=$(docker image list -q --format="{{.Repository}}:{{.Tag}}" --filter="reference=iarsystems/bx*")
 COMPILER=$(docker exec jenkins-docker docker run $BX_IMAGE /usr/bin/find /opt -type f -wholename "*/bin/icc*")
 docker exec jenkins-docker docker run --rm -v LMS2:/usr/local/etc/IARSystems $BX_IMAGE $COMPILER --version
 ```
