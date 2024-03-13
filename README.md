@@ -65,7 +65,8 @@ docker exec jenkins-docker rm /$BX_FILE.tgz
 export -n BX_FILE
 ```
 
->__Note__ the above __BX_IMAGE__ command automatically detects the IAR Build Tools image, assuming you currently only have one image.
+> [!NOTE]
+> The above __BX_IMAGE__ command automatically detects the IAR Build Tools image, assuming you currently only have one image.
 
 The previous command sequence should provide an output showing the `docker image list` from the __jenkins-docker__ container:
 >```
@@ -110,6 +111,7 @@ docker commit jenkins-docker
 
 <img alt="Gitea" align="right" src="https://avatars.githubusercontent.com/u/12724356?s=96&v=4"/>
 
+
 ## Setting up Gitea
 Now it is __gitea__ time. On the Linux server's shell, execute:
 ```
@@ -152,7 +154,8 @@ To generate a new token in the user profile settings:
    - __user__: `Read and Write`
 - click on __Generate Token__.
 
->:bulb: You can generate as many access tokens as you need however, when generating a new token, make sure to copy it when shown in the next page. It will never be shown again.
+> [!TIP]
+> You can generate as many access tokens as you need however, when generating a new token, make sure to copy it when shown in the next page. It will never be shown again.
 
 ### Example by migrating an existing repository
 On the top-right corner of the page:
@@ -178,7 +181,8 @@ docker build -t jenkins:jcasc ~/bx-jenkins-ci
 ```
 
 Now run the __jenkins__ container:
->__Note__ Edit `JENKINS_ADMIN_ID` and `JENKINS_ADMIN_PASSWORD` for running with credentials other than `admin`/`password` for the Jenkins' administrative user.
+> [!NOTE]
+> Edit `JENKINS_ADMIN_ID` and `JENKINS_ADMIN_PASSWORD` for running with credentials other than `admin`/`password` for the Jenkins' administrative user.
 ```
 docker run --name jenkins \
   --network jenkins --network-alias jenkins \
@@ -295,7 +299,8 @@ Now you can start developing using the [IAR Embedded Workbench][url-iar-ew] and 
 
 ![gitea-warnings-ng](https://github.com/felipe-iar/bx-jenkins-ci/assets/54443595/04068ef2-edfd-40a7-80b4-4a2585f30e48)
 
->__Note__ Jenkins provides plugins for many other Git server providers such as GitHub, GitLab or Bitbucket. Although these services also offer their own CI infrastructure and runners. Gitea was picked for this tutorial for its simplicity to deploy in a container. Refer to [Managing Jenkins/Managing Plugins][url-jenkins-docs-plugins] for further details.
+> [!NOTE]
+> Jenkins provides plugins for many other Git server providers such as GitHub, GitLab or Bitbucket. Although these services also offer their own CI infrastructure and runners. Gitea was picked for this tutorial for its simplicity to deploy in a container. Refer to [Managing Jenkins/Managing Plugins][url-jenkins-docs-plugins] for further details.
 
 
 ## Issues
