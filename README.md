@@ -8,8 +8,7 @@ The [IAR Build Tools](https://iar.com/bx) comes with everything you need to buil
 
 This tutorial provides a quick method for bootstrapping the IAR Build Tools, Gitea and Jenkins, each one on its own container, for building and analyzing your embedded projects on-premises. From this starting point, you can apply customizations suitable for your organization's needs.
 
-![bx-jenkins-ci](https://github.com/felipe-iar/bx-jenkins-ci/assets/54443595/bf9ddc03-132e-4706-9af2-25850d891aba)
-
+![bx-jenkins-ci](https://github.com/IARSystems/bx-jenkins-ci/assets/54443595/facfe441-ebd4-4ea4-b079-9273b21be248)
 
 ## Pre-requisites
 For completing this tutorial you are going to need to have the [__bx-docker__][url-bx-docker] tutorial completed. 
