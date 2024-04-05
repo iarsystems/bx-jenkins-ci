@@ -20,8 +20,7 @@ In the Linux server's shell, clone this repository to the user's home directory 
 git clone https://github.com/iarsystems/bx-jenkins-ci.git ~/bx-jenkins-ci
 ```
 
-
-<img alt="Docker" align="right" src="https://avatars.githubusercontent.com/u/5429470?s=96&v=4" />
+<img alt="Docker" align="right" src="https://avatars.githubusercontent.com/u/5429470?s=96&v=4" /><br>
 
 ## Setting up a Docker Network
 For simplifying this setup let's create a [docker network][url-docker-docs-net] named __jenkins__ in the Linux server's shell:
@@ -35,7 +34,7 @@ As administrator, edit the __%WINDIR%/system32/drivers/etc/hosts__ file in the W
 192.168.1.2 docker gitea jenkins
 ```
 
-<img alt="IAR" align="right" src="https://avatars.githubusercontent.com/u/64431848?s=96&v=4" />
+<img alt="IAR" align="right" src="https://avatars.githubusercontent.com/u/64431848?s=110&v=4" /><br>
 
 ## Setting up the IAR Build Tools
 Now go back to the Linux server's shell to prepare the first container. The __jenkins-docker__ container will be based on the __docker:dind__ image, which provides a secure [Docker Registry][url-docker-registry] serving the Docker network you just created.
@@ -108,7 +107,7 @@ Finally commit the changes to the __jenkins-docker__ container:
 docker commit jenkins-docker
 ```
 
-<img alt="Gitea" align="right" src="https://avatars.githubusercontent.com/u/12724356?s=96&v=4"/>
+<img alt="Gitea" align="right" src="https://avatars.githubusercontent.com/u/12724356?s=84&v=4"/><br>
 
 
 ## Setting up Gitea
@@ -164,7 +163,7 @@ On the top-right corner of the page:
    - update its Docker __agent__ settings to match your [bx-docker](https://github.com/iarsystems/bx-docker) image.
 
 
-<img alt="Jenkins" align="right" src="https://avatars.githubusercontent.com/u/107424?s=96&v=4"/>
+<img alt="Jenkins" align="right" src="https://avatars.githubusercontent.com/u/107424?s=72&v=4"/><br>
 
 ## Setting up Jenkins
 It is finally __jenkins__ time. The standard Jenkins setup has a number of steps which can be automated with the [configuration-as-code][url-plugin-casc] plugin. 
