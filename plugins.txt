@@ -1,8 +1,8 @@
 ant:497.v94e7d9fffa_b_9
 authorize-project:1.7.1
-branch-api:2.1128.v717130d4f816
+branch-api:2.1148.vce12cfcdf090
 build-timeout:1.31
-configuration-as-code:1714.v09593e830cfa
+configuration-as-code:1775.v810dc950b_514
 docker-commons:439.va_3cb_0a_6a_fb_29
 docker-java-api:3.3.1-79.v20b_53427e041
 docker-plugin:1.5
@@ -15,6 +15,6 @@ pipeline-github-lib:42.v0739460cda_c4
 pipeline-model-definition:2.2144.v077a_d1928a_40
 pipeline-stage-view:2.33
 ssh-slaves:2.916.vd17b_43357ce4
-warnings-ng:10.5.2
+warnings-ng:11.3.0
 workflow-aggregator:596.v8c21c963d92d
 ws-cleanup:0.45
