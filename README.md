@@ -169,7 +169,7 @@ On the top-right corner of the page:
 It is finally __jenkins__ time. The standard Jenkins setup has a number of steps which can be automated with the [configuration-as-code][url-plugin-casc] plugin. 
 
 The standard Jenkins setup has a number of steps that can be automated with the [configuration-as-code][url-plugin-casc] plugin. Given its fast-paced and complex ecosystem, plugin versions compatibility tend to break regarding interdependencies and the situation becomes worse for those living on the bleeding edge versions. For such reasons, it is reasonable to create a selection of plugin versions which were known to be in a working state for __reducing__ the chances of using broken plugin versions. For this, let's use a custom [Dockerfile](Dockerfile) that will:
-* use the __jenkins/jenkins:lts-jdk11__ as base image, a stable version offering __LTS__ (Long-Term Support).
+* use the __jenkins/jenkins:lts__ as base image, a stable version offering __LTS__ (Long-Term Support).
 * use the __configuration-as-code__ plugin, so that we script the initial Jenkins [configuration](jcasc.yaml).
 * use the `jenkins-plugin-cli` command line utility to install a collection of [plugins](plugins.txt) versions that are known to be working.
 
