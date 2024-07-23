@@ -60,6 +60,7 @@ A webhook is a mechanism which can be used to trigger associated build jobs in J
 Update `/data/gitea/conf/app.ini` for accepting webhooks from the __jenkins__ container:
 ```
 docker exec gitea bash -c "echo -e '\n[webhook]\nALLOWED_HOST_LIST=jenkins\nDISABLE_WEBHOOKS=false' >> /data/gitea/conf/app.ini"
+docker restart gitea
 ```
 
 On the web browser, navigate to http://gitea:3000 to perform the initial Gitea setup:
@@ -79,7 +80,7 @@ On the web browser, navigate to http://gitea:3000 to perform the initial Gitea s
 Instead of using the Gitea administrator account credentials outside its container, it is recommended to use a personal access token so that jenkins can access the repository without the need of using Gitea's administrative credentials.
 
 To generate a new token in the user profile settings:
-- Go to __Application__ → __Generate New Token__.
+- Go to __Applications__ → __Generate New Token__ ([http://gitea:3000/user/settings/applications](http://gitea:3000/user/settings/applications)).
 - Choose a __Token Name__ (suggestion: `Jenkins Token`).
 - Select the following permissions:
    - __issue__: `Read and Write`
@@ -142,7 +143,7 @@ docker run --name jenkins \
 It is time to configure the [__docker-cloud__][url-plugin-docker-cloud] plugin. In your web browser:
 
 - Navigate to [http://jenkins:8080](http://jenkins:8080).
-- Log in as "administrator" (e.g., __admin__).
+- Log in as "administrator" (e.g., `admin`).
 - Go to __Configure a cloud →__.
 - Select __New cloud__ → __Docker__. [http://jenkins:8080/cloud/new](http://jenkins:8080/cloud/new)
 - Name it `Jenkins cloud` and hit __`  Create  `__.
@@ -175,7 +176,10 @@ To configure the [__gitea__][url-plugin-gitea] plugin proceed as follows, starti
 Go back to the Jenkins Dashboard (http://jenkins:8080):
 
 - Click __New Item__.
-- Select __Organization Folder__, give it a name (e.g. "Organization") and click __` OK `__.
+- __Enter an item name__ (e.g. `Organization`).
+- Select __Organization Folder__ and click __` OK `__.
+
+In the __Configuration__ page:
 - Select __Projects__ → "Repository Sources" → __` Add `__ → __Gitea Organization__.
 - Select the "Jenkins Token" from the __Credentials__ drop-down list.
 - Fill the __Owner__ field with the username you created for your Gitea server (e.g., `jenkins`) and __` Save `__.
@@ -183,6 +187,8 @@ Go back to the Jenkins Dashboard (http://jenkins:8080):
 
 ## What happens next?
 After that, Jenkins will use its multi-branch scan plugin to retrieve all the project repositories available on the Gitea Server.
+
+![image](https://github.com/user-attachments/assets/255fdef5-d29d-480d-93fb-d8c9aadd0a4d)
 
 When a project repository contains a [Jenkinsfile](https://github.com/IARSystems/bx-workspaces-ci/blob/master/Jenkinsfile) that uses a [declarative pipeline](https://www.jenkins.io/doc/book/pipeline/syntax/), Jenkins will then automatically execute the pipeline.
 
@@ -202,7 +208,8 @@ pipeline {
 /* ... */
 ```
 
-![jenkins-pipeline](https://github.com/felipe-iar/bx-jenkins-ci/assets/54443595/bf8af987-e9aa-48d9-8d21-8a24a1d6f0ba)
+![image](https://github.com/user-attachments/assets/130c6365-e205-4ecd-baaf-6c0b2e80e503)
+
 
 Jenkins will get a push notification from Gitea (via webhooks) whenever a monitored event is generated on the __owner__'s repositories.
 
@@ -211,11 +218,12 @@ Now you can start developing using the [IAR Embedded Workbench][url-iar-ew] and 
 ### Highlights
 * The [__warnings-ng__][url-plugin-warnings-ng] plugin gives instantaneous feedback for every build on compiler-generated warnings as well violation warnings on conding standards provided by [IAR C-STAT](https://www.iar.com/cstat), our static code analysis tool for C/C++:
 
-![jenkins-warnings-ng-cstat](https://github.com/felipe-iar/bx-jenkins-ci/assets/54443595/785ed739-be76-4650-b52e-87b31804d313)
+![warnings-ng-cstat](https://github.com/user-attachments/assets/50138a98-8768-4d47-af58-f29a241bfb36)
+
 
 * The [__gitea-checks__][url-plugin-gitea-checks] plugin has integrations with the [__warnings-ng__][url-plugin-warnings-ng] plugin. On the Gitea server, it can help you to spot failing checks on pull requests, preventing potentially defective code from being inadvertently merged into a project's production branch:
 
-![gitea-warnings-ng](https://github.com/felipe-iar/bx-jenkins-ci/assets/54443595/04068ef2-edfd-40a7-80b4-4a2585f30e48)
+![gitea-plugin](https://github.com/user-attachments/assets/c933b4cb-557f-4f17-8b90-1489f904f675)
 
 > [!NOTE]
 > Jenkins provides plugins for many other Git server providers such as GitHub, GitLab or Bitbucket. Although these services also offer their own CI infrastructure and runners. Gitea was picked for this tutorial for its simplicity to deploy in a container. Refer to [Managing Jenkins/Managing Plugins][url-jenkins-docs-plugins] for further details.
