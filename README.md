@@ -223,7 +223,12 @@ Now you can start developing using the [IAR Embedded Workbench][url-iar-ew] and 
 
 * The [__gitea-checks__][url-plugin-gitea-checks] plugin has integrations with the [__warnings-ng__][url-plugin-warnings-ng] plugin. On the Gitea server, it can help you to spot failing checks on pull requests, preventing potentially defective code from being inadvertently merged into a project's production branch:
 
-![gitea-checks-plugin](https://github.com/user-attachments/assets/997db964-bdee-47ba-af80-4427dda833f9)
+
+![gitea-checks-plugin-running](https://github.com/user-attachments/assets/6224c23f-f74f-455e-a300-df2de19aa1c7)
+
+
+![gitea-checks-plugin-failing](https://github.com/user-attachments/assets/1025d15c-5ce4-4085-92be-b57775defa6d)
+
 
 > [!NOTE]
 > Jenkins provides plugins for many other Git server providers such as GitHub, GitLab or Bitbucket. Although these services also offer their own CI infrastructure and runners. Gitea was picked for this tutorial for its simplicity to deploy in a container. Refer to [Managing Jenkins/Managing Plugins][url-jenkins-docs-plugins] for further details.
