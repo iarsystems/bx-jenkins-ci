@@ -13,9 +13,9 @@ In a picture:
 ![bx-jenkins-ci](https://github.com/user-attachments/assets/ffa7c04e-6394-458c-b572-464d3fdcb0b2)
 
 ## Pre-requisites
-For completing this tutorial you are going to need to have the [__bx-docker__][url-bx-docker] tutorial completed. 
+__For completing this tutorial you need to have the Docker image with the IAR Build Tools from the [__bx-docker__][url-bx-docker] tutorial.__
 
-You will also need a web browser to access webpages. For this tutorial we will consider that the web browser is installed on a Windows machine in which you have privileges to execute administrative tasks and that can reach the Linux server containing the Docker daemon with the IAR Build Tools.
+You will also need a web browser to access webpages. It is assumed that the web browser is installed on a Windows PC in which you have privileges to execute administrative tasks and that can reach the Linux server containing the Docker daemon with the IAR Build Tools.
 
 In the Linux server's shell, clone this repository to the user's home directory (`~`):
 ```
@@ -33,10 +33,10 @@ From here onwards, we spawn all the tutorial's containers with `--network-alias 
 
 As administrator, edit the __%WINDIR%/system32/drivers/etc/hosts__ file in the Windows PC. Add the following line, replacing `192.168.1.2` by the actual Linux server's IP address. With that, the Windows PC can reach the containers' exposed service ports by their respective network-alias names:
 ```
-192.168.1.2 docker gitea jenkins
+192.168.1.2 gitea jenkins
 ```
 
-<img alt="IAR" align="right" src="https://avatars.githubusercontent.com/u/64431848?s=110&v=4" /><br>
+<img alt="Gitea" align="right" src="https://avatars.githubusercontent.com/u/12724356?s=84&v=4"/><br>
 
 ## Setting up Gitea
 Now it is time to setup the __gitea__ container. On the Linux server's shell, execute:
@@ -103,12 +103,16 @@ On the top-right corner of the page:
 <img alt="Jenkins" align="right" src="https://avatars.githubusercontent.com/u/107424?s=72&v=4"/><br>
 
 ## Setting up Jenkins
-It is finally time to set up the __jenkins__ container. The standard Jenkins setup has a number of steps which can be automated with the [configuration-as-code][url-plugin-casc] plugin. 
+It is finally time to set up the __jenkins__ container.
 
-The standard Jenkins setup has a number of steps that can be automated with the [configuration-as-code][url-plugin-casc] plugin. Given its fast-paced and complex ecosystem, plugin versions compatibility tend to break regarding interdependencies and the situation becomes worse for those living on the bleeding edge versions. For such reasons, it is reasonable to create a selection of plugin versions which were known to be in a working state for __reducing__ the chances of using broken plugin versions. For this, let's use a custom [Dockerfile](Dockerfile) that will:
+The standard Jenkins setup has a number of steps that can be automated with the [configuration-as-code][url-plugin-casc] plugin. For this, let's use a custom [Dockerfile](Dockerfile) that will:
 * use the __jenkins/jenkins:lts-slim__ as base image, a stable version offering __LTS__ (Long-Term Support).
 * use the __configuration-as-code__ plugin, so that we script the initial Jenkins [configuration](jcasc.yaml).
 * use the `jenkins-plugin-cli` command line utility to install a collection of [plugins](plugins.txt) versions that are known to be working.
+* and more... (check [Dockerfile](Dockerfile) for details).
+
+>[!NOTE]
+>Given its fast-paced and complex ecosystem, Jenkins' plugins sometimes might break compatibility regarding its interdependencies. For such reasons, if you try this tutorial at a point in time where a certain plugin prevents the Docker image from being created, it is possible to pin the broken plugin's version by replacing `<broken-plugin>:latest` for a plugin's earlier version in the `plugin.txt` file. 
 
 Build the image, tagging it as __jenkins:jcasc__:
 ```
