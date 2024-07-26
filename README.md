@@ -10,7 +10,7 @@ This tutorial provides a quick method for bootstrapping the IAR Build Tools, Git
 
 In a picture:
 
-![bx-jenkins-ci](https://github.com/user-attachments/assets/ffa7c04e-6394-458c-b572-464d3fdcb0b2)
+![bx-jenkins-ci](https://github.com/user-attachments/assets/bd02dbad-0f35-4ef7-89ca-8b1d4cada87a)
 
 ## Pre-requisites
 __For completing this tutorial you need to have the Docker image with the IAR Build Tools from the [__bx-docker__][url-bx-docker] tutorial.__
