@@ -239,6 +239,8 @@ This tutorial provides a quickly deployable and reproducible setup where everyth
    
 You can learn from the provided scripts, [Dockerfile](Dockerfile) and official [Jenkins Documentation][url-jenkins-docs]. Together, these resources form a cornerstone for your organization, allowing you to use them as-is or customize them to ensure the containers run in ways that meet your specific needs.
 
+[__` Follow us `__](https://github.com/iarsystems) on GitHub to get updates about tutorials like this and more.
+
 
 ## Issues
 For technical support contact [IAR Customer Support][url-iar-customer-support].
