@@ -1,7 +1,7 @@
 # IAR Build Tools in a Jenkins CI
 
 >[!WARNING]
->The information provided in this tutorial is subject to change without notice and does not represent a commitment on any part of IAR. While the information contained herein is useful as reference for DevOps Engineers willing to implement CI/CD using IAR Tools, IAR assumes no responsibility for any errors, omissions or particular implementations.
+>The information in this repository is subject to change without notice and does not constitute a commitment by IAR. While it serves as a valuable reference for DevOps Engineers implementing Continuous Integration with IAR Tools, IAR assumes no responsibility for any errors, omissions, or specific implementations.
 
 ## Introduction
 The [IAR Build Tools](https://iar.com/bx) comes with everything you need to build projects created with the IAR Embedded Workbench from the command line. [Jenkins][url-jenkins] is an automation controller suitable for CI (Continuous Integration). [Gitea][url-gitea] is a lightweight Git server. 
@@ -192,7 +192,7 @@ After that, Jenkins will use its multi-branch scan plugin to retrieve all the pr
 
 When a project repository contains a [Jenkinsfile](https://github.com/IARSystems/bx-workspaces-ci/blob/master/Jenkinsfile) that uses a [declarative pipeline](https://www.jenkins.io/doc/book/pipeline/syntax/), Jenkins will then automatically execute the pipeline.
 
-When the pipeline requests a Docker agent for the __docker-cloud__ plugin, it will automatically forward the request to the __jenkins-docker__ container so a new container based on the selected image is dynamically spawned during the workflow execution.
+When the pipeline requests a Docker agent for the __docker-cloud__ plugin, it will automatically forward the request to the __jenkins__ container so a new container based on the selected image is dynamically spawned during the workflow execution.
 ```groovy
 pipeline {
   agent {
@@ -216,7 +216,7 @@ Jenkins will get a push notification from Gitea (via webhooks) whenever a monito
 Now you can start developing using the [IAR Embedded Workbench][url-iar-ew] and committing the project's code to the Gitea Server so you get automated builds and reports.
 
 ### Highlights
-* The [__warnings-ng__][url-plugin-warnings-ng] plugin gives instantaneous feedback for every build on compiler-generated warnings as well violation warnings on conding standards provided by [IAR C-STAT](https://www.iar.com/cstat), our static code analysis tool for C/C++:
+* The [__warnings-ng__][url-plugin-warnings-ng] plugin gives instantaneous feedback for every build on compiler-generated warnings as well violation warnings on coding standards provided by [IAR C-STAT](https://www.iar.com/cstat), our static code analysis tool for C/C++:
 
 ![warnings-ng-cstat](https://github.com/user-attachments/assets/50138a98-8768-4d47-af58-f29a241bfb36)
 
@@ -234,20 +234,21 @@ Now you can start developing using the [IAR Embedded Workbench][url-iar-ew] and 
 > Jenkins provides plugins for many other Git server providers such as GitHub, GitLab or Bitbucket. Although these services also offer their own CI infrastructure and runners. Gitea was picked for this tutorial for its simplicity to deploy in a container. Refer to [Managing Jenkins/Managing Plugins][url-jenkins-docs-plugins] for further details.
 
 
-## Issues
-Found an issue or have a suggestion specifically related to the [__bx-jenkins-ci__][url-repo] tutorial? Feel free to use the public issue tracker.
-- Do not forget to take a look at [earlier issues][url-repo-issue-old].
-- If creating a [new][url-repo-issue-new] issue, please describe it in detail.
-
-
 ## Summary
-There you have it. A quickly deployable and reproducible setup where everything runs on containers. And that was just one of many ways of setting automated workflows using the IAR Build Tools. Using [Jenkins Configuration as Code][url-jenkins-jcasc] for setting up a new Jenkins controller simplifies the initial configuration by employing yaml syntax. Such configuration can be validated and reproduced in other Jenkins controllers.
+This tutorial provides a quickly deployable and reproducible setup where everything runs on containers. This is just one of many ways to set up automated workflows using the IAR Build Tools. By using [Jenkins Configuration as Code][url-jenkins-jcasc] fto set up a new Jenkins controller, you can simplify the initial configuration with YAML syntax. This configuration can be validated and reproduced across other Jenkins controllers.
    
-Now you can learn from the scripts, from the [Dockerfile](Dockerfile) and from the official [Jenkins Documentation][url-jenkins-docs] which together sum up as a cornerstone for your organization to use them as they are or to customize them so that the containers run in suitable ways for particular needs.
+You can learn from the provided scripts, [Dockerfile](Dockerfile) and official [Jenkins Documentation][url-jenkins-docs]. Together, these resources form a cornerstone for your organization, allowing you to use them as-is or customize them to ensure the containers run in ways that meet your specific needs.
 
+
+## Issues
+For technical support contact [IAR Customer Support][url-iar-customer-support].
+
+For questions or suggestions related to this tutorial: try the [wiki][url-repo-wiki] or check [earlier issues][url-repo-issue-old]. If those don't help, create a [new issue][url-repo-issue-new] with detailed information.
 
 
 <!-- Links -->
+[url-iar-customer-support]: https://iar.my.site.com/mypages/s/contactsupport
+
 [url-iar-bx]:                 https://iar.com/bx
 [url-iar-contact]:            https://iar.com/about/contact
 [url-iar-cstat]:              https://iar.com/cstat
