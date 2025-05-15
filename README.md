@@ -261,7 +261,7 @@ For questions or suggestions related to this tutorial: try the [wiki][url-repo-w
 
 [url-vi]:                     https://en.wikipedia.org/wiki/Vi
     
-[url-bx-docker]:              https://github.com/iarsystems/bx-docker
+[url-bx-docker]:              https://github.com/iarsystems/bx-docker/tree/v2025.04
 [url-bx-workspaces-ci]:       https://github.com/iarsystems/bx-workspaces-ci
 
 [url-docker-registry]:        https://docs.docker.com/registry
