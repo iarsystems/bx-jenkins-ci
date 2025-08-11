@@ -117,7 +117,7 @@ The standard Jenkins setup has a number of steps that can be automated with the 
 
 Build the image, tagging it as __jenkins:jcasc__:
 ```
-docker build -t jenkins:jcasc ~/bx-jenkins-ci
+docker build --tag jenkins:jcasc --build-arg DOCKER_GROUP=$(getent group docker | cut -d: -f3) ~/bx-jenkins-ci
 ```
 
 Now run the __jenkins__ container:
